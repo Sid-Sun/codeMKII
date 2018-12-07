@@ -15,6 +15,9 @@ int main(int argc, char *argv[])
     char messageChar, passPhraseChar;
     int messageArray[1000];
     char minus = *"-";
+    int a=7260703;
+    long long int temp1,temp2,temp3;
+    long long int messageIndivisualEncoded;
     int passPhraseASCII, passPhrase, flag=1,SPP, passPhraseDiff = 0, tempASCII, countPPDigit = 0;
     int messageASCII,n=0,i=0;
     if (messageFile == NULL)
@@ -22,7 +25,7 @@ int main(int argc, char *argv[])
         printf("Please give input File destination \n");
         exit(0);
     }
-    //Start Code for PP calcul1ation
+    //Start Code for PP calculation
     if (passPhraseFile == NULL) {
         printf("Please Give PassPhrase destination \n");
         exit(0);
@@ -66,7 +69,8 @@ int main(int argc, char *argv[])
     {
         printf("Char: %c, ASCII: %d\n",messageChar, (int)messageChar);
         messageASCII = (int) messageChar;
-        messageArray[n] = messageASCII;
+        messageIndivisualEncoded =  (long long int) ((a + messageASCII*SPP)/(long long int)passPhrase);
+        messageArray[n] = messageIndivisualEncoded;
 //        messageArray[n+1] = *"-";
         n++;
         messageChar = fgetc(messageFile);
