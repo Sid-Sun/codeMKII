@@ -12,15 +12,17 @@ int main(int argc, char *argv[])
     FILE *messageFile = fopen(argv[1], "r");
     FILE *passPhraseFile = fopen(argv[2],"r");
     FILE *outputFile = fopen(argv[3],"w");
-    char messageChar, passPhraseChar,messageArray[1000];
+    char messageChar, passPhraseChar;
+    int messageArray[1000];
+    char minus = *"-";
     int passPhraseASCII, passPhrase, flag=1,SPP, passPhraseDiff = 0, tempASCII, countPPDigit = 0;
-    int messageASCII,n=0;
+    int messageASCII,n=0,i=0;
     if (messageFile == NULL)
     {
         printf("Please give input File destination \n");
         exit(0);
     }
-    //Start Code for PP calculation
+    //Start Code for PP calcul1ation
     if (passPhraseFile == NULL) {
         printf("Please Give PassPhrase destination \n");
         exit(0);
@@ -60,21 +62,21 @@ int main(int argc, char *argv[])
     //SPP Calculated
     //Start Message calculations
     messageChar = fgetc(messageFile);
-//    printf("Initial: %c",c);
     while (messageChar != EOF)
     {
-        //fputc(c, fp);
-        //printf ("%c", c);
+        printf("Char: %c, ASCII: %d\n",messageChar, (int)messageChar);
         messageASCII = (int) messageChar;
         messageArray[n] = messageASCII;
-        messageArray[n+1] = (char)"-";
-        n+=2;
+//        messageArray[n+1] = *"-";
+        n++;
         messageChar = fgetc(messageFile);
     }
-    for (n=0;n<sizeof(messageArray);n++){
-        printf("%s",messageArray[n]);
+    for (i=0;i<n;i++){
+        fprintf(outputFile,"%d", messageArray[i]);
+        putc(minus, outputFile);
     }
-    printf("\n");
+    fclose(outputFile);
+    fclose(passPhraseFile);
     fclose(messageFile);
     return 0;
 }
@@ -86,8 +88,8 @@ int main(int argc, char *argv[])
 int sunCodePassPhrase(int number, int count){
     int digit,code,spp = 1,flag = 1, digitArray[count],n=1;
     unsigned int pow = 10;
-    printf("Count: %d",count);
-    printf("Got: %d\n",number);
+  //  printf("Count: %d",count);
+  //  printf("Got: %d\n",number);
     while (number != 0){
         digit = number % 10;
         digitArray[count-n] = digit;
