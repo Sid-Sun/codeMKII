@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
             decode(argc, argv);
         }
     } else {
-        printf("%d",argc);
         printf("Usage:\n");
         printf("    For encoding: codeMK2 -e <input message file> <passphrase file> <path to output>.\n");
         printf("    For decoding: codeMK2 -d <input: codeMK2 encoded file> <passphrase file> <path to original message output>.\n");
