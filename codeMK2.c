@@ -3,6 +3,7 @@
 //
 #include <stdio.h>
 #include <stdlib.h> // For exit()
+#include <string.h>
 //Declaration of functions
 int code(char letter);
 int encode(int argc, char *argv[]);
@@ -16,18 +17,25 @@ int calculateSunPassPhrase(int passPhrase);
 //Functions
 int main(int argc, char *argv[])
 {
-    char input = *argv[1];
-    if (input == *"-e"){
-        encode(argc,argv);
-    } else if (input == *"o"){
-        decode(argc,argv);
+    if (argc == 5){
+        if (!strcmp(argv[1], "-e")||!strcmp(argv[1], "--encode")){
+            encode(argc,argv);
+        } else if (!strcmp(argv[1], "-d")||!strcmp(argv[1], "--decode")) {
+            decode(argc, argv);
+        }
+    } else {
+        printf("%d",argc);
+        printf("Usage:\n");
+        printf("    For encoding: codeMK2 -e <input message file> <passphrase file> <path to output>.\n");
+        printf("    For decoding: codeMK2 -d <input: codeMK2 encoded file> <passphrase file> <path to original message output>.\n");
     }
 }
 int decode(int argc, char *argv[]){
     FILE *inputCode = fopen(argv[2], "r");
+    FILE *outputFile = fopen(argv[4],"a");
     int a=7260703;
     char codeChar;
-    int passPhrase,flag=1,SPP,countPPDigit,tempASCII,codeToDecode;
+    int passPhrase,flag=1,SPP,countPPDigit,tempASCII,codeToDecode, originalASCII;
     long long int decodingOffSet;
     //Loop Control variables
     int i=1,j;
@@ -35,11 +43,12 @@ int decode(int argc, char *argv[]){
     passPhrase = passPhraseCalculate(argv);
     //Call function to calculate sunPassPhrase
     SPP = calculateSunPassPhrase(passPhrase);
+//    printf("PP: %d\n SPP: %d\n",passPhrase,SPP);
     codeChar = fgetc(inputCode);
 //    if (codeChar != EOF) {
         while (codeChar != EOF) {
             if (codeChar != '-') {
-                printf("Current char: %c\n", codeChar);
+//                printf("Current char: %c\n", codeChar);
             codeChar = codeChar - '0'; //converts to int on which we can operate
                 if (flag == 1) {
                     codeToDecode = codeChar;
@@ -47,19 +56,15 @@ int decode(int argc, char *argv[]){
                 } else {
                     codeToDecode = concatenate(codeToDecode, codeChar);
                 }
-                printf("Code: %d\n", codeToDecode);
+//                printf("Code: %d\n", codeToDecode);
             } else {
-                printf("Aha, next block\n");
-//                i = 0;
+                originalASCII = ((codeToDecode - (a/passPhrase))/SPP);
+//                printf("Original ASCII was: %c\n",originalASCII);
+                fprintf(outputFile, "%c", originalASCII);
+//                printf("Number: %d",(int)encodedMessageDigitArray[i]);
                 flag = 1;
             }
-//            if () {
-                //printf("%d\n",(int)codeChar);
                 codeChar = fgetc(inputCode);
-//            } else {
-//                printf("Kul\n");
-//                i=0;
-//            }
         }
 //    decodingOffSet =
     return 0;
@@ -84,25 +89,26 @@ int encode(int argc, char *argv[]){
     passPhrase = passPhraseCalculate(argv);
     //Call function for calculations of SPP
     SPP = calculateSunPassPhrase(passPhrase);
+    //printf("PP: %d\n SPP: %d\n",passPhrase,SPP);
     //Start Message calculations
     messageChar = fgetc(messageFile);
     while (messageChar != EOF)
     {
-        printf("Char: %c, ASCII: %d\n",messageChar, (int)messageChar);
+//        printf("Char: %c, ASCII: %d\n",messageChar, (int)messageChar);
         messageASCII = (int) messageChar;
-        printf("a: %d\n",a);
-        printf("messageASCII: %d\n",messageASCII);
-        printf("SPP: %d\n",SPP);
-        printf("passphrase: %d\n",passPhrase);
-        messageIndivisualEncoded =  (long long int) ((a + messageASCII*SPP)/passPhrase);
+//        printf("a: %d\n",a);
+//        printf("messageASCII: %d\n",messageASCII);
+//        printf("SPP: %d\n",SPP);
+//        printf("passphrase: %d\n",passPhrase);
+        messageIndivisualEncoded =  (long long int) ((a/passPhrase + messageASCII*SPP));
         tempASCII = messageIndivisualEncoded;
-        printf("Message: %lld\n",messageIndivisualEncoded);
+//        printf("Message: %lld\n",messageIndivisualEncoded);
         i=0;
         while (tempASCII != 0){
             tempASCII=tempASCII/10;
             i++;
         }
-        printf("Calling write out now.\n");
+//        printf("Calling write out now.\n");
         writeOutput(messageIndivisualEncoded,i,argv);
         i=1; //Reset i to 1
         messageArray[n] = messageIndivisualEncoded;
@@ -126,10 +132,10 @@ int writeOutput(long long int encodedMessage,int encodedMessageLength,char *argv
     }
     for(i=0;i<encodedMessageLength;i++) {
         fprintf(outputFile, "%d", encodedMessageDigitArray[i]);
-        printf("Number: %d",(int)encodedMessageDigitArray[i]);
+//        printf("Number: %d",(int)encodedMessageDigitArray[i]);
     }
     fprintf(outputFile,"%c",'-');
-    printf("\n");
+//    printf("\n");
     fclose(outputFile);
 }
 /*int code(char letter){
@@ -235,10 +241,10 @@ int passPhraseCalculate(char *argv[]){
         }
     }
     passPhraseDiff = abs(passPhraseDiff);
-    printf("Diff: %d\n",passPhraseDiff);
-    printf("Count: %d\n",countPPDigit);
+//    printf("Diff: %d\n",passPhraseDiff);
+//    printf("Count: %d\n",countPPDigit);
     passPhrase = (passPhraseDiff / countPPDigit);
-    printf("Sending: %d",passPhrase);
+//    printf("Sending: %d",passPhrase);
     return passPhrase;
 }
 int calculateSunPassPhrase(int passPhrase){
