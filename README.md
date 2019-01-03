@@ -24,3 +24,7 @@ Linux:
         sudo mv codeMK2 /usr/bin/codeMK2
         sudo chmod 755 /usr/bin/codeMK2
         sudo chown root:root /usr/bin/codeMK2
+
+OR:
+
+	curl https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/install-linux.sh | sh
