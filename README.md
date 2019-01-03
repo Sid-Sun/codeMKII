@@ -2,11 +2,18 @@
 
 Introducting codeMKII, my encoding solution.
 
+Current version: v1.1.0
+
 Usage:
 
-    For encoding: codeMK2 -e <input message file> <passphrase file> <path to output>.
+    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.
     
-    For decoding: codeMK2 -d <input: codeMK2 encoded file> <passphrase file> <path to original message output>.
+    For decoding: codeMK2 (--decode / -decode / -d) <input: codeMK2 encoded file> <passphrase file> <original message output file name>.
+
+To check verison:
+
+    codeMK2 (--version / -version /-v)
+
 Installation:
 
 Linux:

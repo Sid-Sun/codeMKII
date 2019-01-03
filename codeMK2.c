@@ -27,15 +27,19 @@ int calculateSunPassPhrase(int passPhrase);
 //Functions
 int main(int argc, char *argv[]) {
     if (argc == 5) {
-        if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode")) {
+        if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode") || !strcmp(argv[1], "-encode")) {
             encode(argc, argv);
-        } else if (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--decode")) {
+        } else if (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--decode") || !strcmp(argv[1], "-decode")) {
             decode(argc, argv);
         }
+    } else if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version")) {
+        printf("codeMKII version: v1.1.0\n");
     } else {
-        printf("Usage:\n");
-        printf("    For encoding: codeMK2 -e <input message file> <passphrase file> <path to output>.\n");
-        printf("    For decoding: codeMK2 -d <input: codeMK2 encoded file> <passphrase file> <path to original message output>.\n");
+        printf("\nUsage:\n");
+        printf("    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.\n");
+        printf("    For decoding: codeMK2 (--decode / -decode / -d) <input: codeMK2 encoded file> <passphrase file> <original message output file name>.\n");
+        printf("\nTo check version:\n");
+        printf("    codeMK2 (--version / -version /-v).\n");
     }
 }
 
