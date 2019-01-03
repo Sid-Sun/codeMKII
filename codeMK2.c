@@ -4,23 +4,32 @@
 #include <stdio.h>
 #include <stdlib.h> // For exit()
 #include <string.h>
+
 //Declaration of functions
 int code(char letter);
+
 int encode(int argc, char *argv[]);
+
 int sunCodePassPhrase(int number, int count);
+
 int passPhraseCalculate(char *argv[]);
+
 int decode(int argc, char *argv[]);
+
 unsigned concatenate(unsigned x, unsigned y);
+
 int actCode(int digit);
-int writeOutput(long long int encodedMessage,int encodedMessageLength, char *argv[]);
+
+int writeOutput(long long int encodedMessage, int encodedMessageLength, char *argv[]);
+
 int calculateSunPassPhrase(int passPhrase);
+
 //Functions
-int main(int argc, char *argv[])
-{
-    if (argc == 5){
-        if (!strcmp(argv[1], "-e")||!strcmp(argv[1], "--encode")){
-            encode(argc,argv);
-        } else if (!strcmp(argv[1], "-d")||!strcmp(argv[1], "--decode")) {
+int main(int argc, char *argv[]) {
+    if (argc == 5) {
+        if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode")) {
+            encode(argc, argv);
+        } else if (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--decode")) {
             decode(argc, argv);
         }
     } else {
@@ -29,51 +38,52 @@ int main(int argc, char *argv[])
         printf("    For decoding: codeMK2 -d <input: codeMK2 encoded file> <passphrase file> <path to original message output>.\n");
     }
 }
-int decode(int argc, char *argv[]){
+
+int decode(int argc, char *argv[]) {
     FILE *inputCode = fopen(argv[2], "r");
-    FILE *outputFile = fopen(argv[4],"a");
-    int a=7260703;
+    FILE *outputFile = fopen(argv[4], "a");
+    int a = 7260703;
     char codeChar;
-    int passPhrase,flag=1,SPP,countPPDigit,tempASCII,codeToDecode, originalASCII;
+    int passPhrase, flag = 1, SPP, countPPDigit, tempASCII, codeToDecode, originalASCII;
     long long int decodingOffSet;
     //Loop Control variables
-    int i=1,j;
+    int i = 1, j;
     //Call function to calculate PassPhrase
     passPhrase = passPhraseCalculate(argv);
     //Call function to calculate sunPassPhrase
     SPP = calculateSunPassPhrase(passPhrase);
     codeChar = fgetc(inputCode);
-        while (codeChar != EOF) {
-            if (codeChar != '-') {
+    while (codeChar != EOF) {
+        if (codeChar != '-') {
             codeChar = codeChar - '0'; //converts to int on which we can operate
-                if (flag == 1) {
-                    codeToDecode = codeChar;
-                    flag = 0;
-                } else {
-                    codeToDecode = concatenate(codeToDecode, codeChar);
-                }
+            if (flag == 1) {
+                codeToDecode = codeChar;
+                flag = 0;
             } else {
-                originalASCII = ((codeToDecode - (a/passPhrase))/SPP);
-                fprintf(outputFile, "%c", originalASCII);
-                flag = 1;
+                codeToDecode = concatenate(codeToDecode, codeChar);
             }
-                codeChar = fgetc(inputCode);
+        } else {
+            originalASCII = ((codeToDecode - (a / passPhrase)) / SPP);
+            fprintf(outputFile, "%c", originalASCII);
+            flag = 1;
         }
+        codeChar = fgetc(inputCode);
+    }
     return 0;
 }
-int encode(int argc, char *argv[]){
+
+int encode(int argc, char *argv[]) {
     FILE *messageFile = fopen(argv[2], "r");
     char messageChar;
     int messageArray[1000];
     char minus = *"-";
-    int a=7260703;
+    int a = 7260703;
     long long int messageIndivisualEncoded;
-    int passPhrase,SPP, tempASCII, countPPDigit = 0;
+    int passPhrase, SPP, tempASCII, countPPDigit = 0;
     int messageASCII;
     //Loop control variables
-    int n=0,i=0;
-    if (messageFile == NULL)
-    {
+    int n = 0, i = 0;
+    if (messageFile == NULL) {
         printf("Please give input File destination \n");
         exit(0);
     }
@@ -83,55 +93,56 @@ int encode(int argc, char *argv[]){
     SPP = calculateSunPassPhrase(passPhrase);
     //Start Message calculations
     messageChar = fgetc(messageFile);
-    while (messageChar != EOF)
-    {
+    while (messageChar != EOF) {
         messageASCII = (int) messageChar;
-        messageIndivisualEncoded =  (long long int) ((a/passPhrase + messageASCII*SPP));
+        messageIndivisualEncoded = (long long int) ((a / passPhrase + messageASCII * SPP));
         tempASCII = messageIndivisualEncoded;
-        i=0;
-        while (tempASCII != 0){
-            tempASCII=tempASCII/10;
+        i = 0;
+        while (tempASCII != 0) {
+            tempASCII = tempASCII / 10;
             i++;
         }
-        writeOutput(messageIndivisualEncoded,i,argv);
-        i=1; //Reset i to 1
+        writeOutput(messageIndivisualEncoded, i, argv);
+        i = 1; //Reset i to 1
         messageArray[n] = messageIndivisualEncoded;
         messageChar = fgetc(messageFile);
-        if(messageChar != EOF){ //I don't know why i wrote this but it works, i guess.. don't touch it!
+        if (messageChar != EOF) { //I don't know why i wrote this but it works, i guess.. don't touch it!
             n++;
         }
     }
     fclose(messageFile);
     return 0;
 }
-int writeOutput(long long int encodedMessage,int encodedMessageLength,char *argv[]){
-    FILE *outputFile = fopen(argv[4],"a");
+
+int writeOutput(long long int encodedMessage, int encodedMessageLength, char *argv[]) {
+    FILE *outputFile = fopen(argv[4], "a");
     int encodedMessageDigitArray[encodedMessageLength];
-    int messageDigit,n=1,i;
-    while (encodedMessage!=0){
+    int messageDigit, n = 1, i;
+    while (encodedMessage != 0) {
         messageDigit = encodedMessage % 10;
-        encodedMessageDigitArray[encodedMessageLength - n]= messageDigit;
+        encodedMessageDigitArray[encodedMessageLength - n] = messageDigit;
         n++;
-        encodedMessage = encodedMessage/10;
+        encodedMessage = encodedMessage / 10;
     }
-    for(i=0;i<encodedMessageLength;i++) {
+    for (i = 0; i < encodedMessageLength; i++) {
         fprintf(outputFile, "%d", encodedMessageDigitArray[i]);
     }
-    fprintf(outputFile,"%c",'-');
+    fprintf(outputFile, "%c", '-');
     fclose(outputFile);
 }
-int sunCodePassPhrase(int number, int count){
-    int digit,code,spp = 1,flag = 1, digitArray[count],n=1;
+
+int sunCodePassPhrase(int number, int count) {
+    int digit, code, spp = 1, flag = 1, digitArray[count], n = 1;
     unsigned int pow = 10;\
-    while (number != 0){
+    while (number != 0) {
         digit = number % 10;
-        digitArray[count-n] = digit; //n must be initialized with 1 as arrays start at 0
+        digitArray[count - n] = digit; //n must be initialized with 1 as arrays start at 0
         n++;
-        number = number/10;
+        number = number / 10;
     }
-    for (n=0;n<count;n++){
+    for (n = 0; n < count; n++) {
         code = actCode(digitArray[n]);
-        if(flag==1){
+        if (flag == 1) {
             spp = code;
             flag = 0;
         } else {
@@ -140,13 +151,15 @@ int sunCodePassPhrase(int number, int count){
     }
     return spp;
 }
+
 unsigned concatenate(unsigned x, unsigned y) {
     unsigned pow = 10;
-    while(y >= pow)
+    while (y >= pow)
         pow *= 10;
     return x * pow + y;
 }
-int actCode(int digit){
+
+int actCode(int digit) {
     int code;
     switch (digit) {
         case 0:
@@ -184,23 +197,24 @@ int actCode(int digit){
     }
     return code;
 }
-int passPhraseCalculate(char *argv[]){
-    FILE *passPhraseFile = fopen(argv[3],"r");
+
+int passPhraseCalculate(char *argv[]) {
+    FILE *passPhraseFile = fopen(argv[3], "r");
     char passPhraseChar;
-    int passPhraseASCII,passPhrase, passPhraseDiff,tempASCII,flag=1;
-    long long int countPPDigit=0;
+    int passPhraseASCII, passPhrase, passPhraseDiff, tempASCII, flag = 1;
+    long long int countPPDigit = 0;
     //Start Code for PP calculation
     if (passPhraseFile == NULL) {
         printf("Please Give PassPhrase destination \n");
         exit(0);
     }
     passPhraseChar = fgetc(passPhraseFile);
-    while(passPhraseChar != EOF){
-        if ((int)passPhraseChar != 10) {
+    while (passPhraseChar != EOF) {
+        if ((int) passPhraseChar != 10) {
             passPhraseASCII = (int) passPhraseChar;
             tempASCII = passPhraseASCII;
-            while (tempASCII != 0){
-                tempASCII = tempASCII/10;
+            while (tempASCII != 0) {
+                tempASCII = tempASCII / 10;
                 countPPDigit++;
             }
             if (flag == 1) {
@@ -219,15 +233,16 @@ int passPhraseCalculate(char *argv[]){
     passPhrase = (passPhraseDiff / countPPDigit);
     return passPhrase;
 }
-int calculateSunPassPhrase(int passPhrase){
-    int tempASCII,countPPDigit,SPP;
+
+int calculateSunPassPhrase(int passPhrase) {
+    int tempASCII, countPPDigit, SPP;
     //Start calculations for SPP
     tempASCII = passPhrase;
     countPPDigit = 0;
-    while (tempASCII != 0){
-        tempASCII = tempASCII/10;
+    while (tempASCII != 0) {
+        tempASCII = tempASCII / 10;
         countPPDigit++;
     }
-    SPP = sunCodePassPhrase(passPhrase,countPPDigit);
+    SPP = sunCodePassPhrase(passPhrase, countPPDigit);
     return SPP;
 }
