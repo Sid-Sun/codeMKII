@@ -75,7 +75,6 @@ int decode(int argc, char *argv[]) {
 int encode(int argc, char *argv[]) {
     FILE *messageFile = fopen(argv[2], "r");
     char messageChar;
-    int messageArray[1000];
     char minus = *"-";
     int a = 7260703;
     long long int messageIndivisualEncoded;
@@ -104,7 +103,6 @@ int encode(int argc, char *argv[]) {
         }
         writeOutput(messageIndivisualEncoded, i, argv);
         i = 1; //Reset i to 1
-        messageArray[n] = messageIndivisualEncoded;
         messageChar = fgetc(messageFile);
         if (messageChar != EOF) { //I don't know why i wrote this but it works, i guess.. don't touch it!
             n++;
