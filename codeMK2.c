@@ -48,8 +48,8 @@ int decode(int argc, char *argv[]) {
     FILE *outputFile = fopen(argv[4], "a");
     int a = 7260703;
     char codeChar;
-    int passPhrase, flag = 1, SPP, countPPDigit, tempASCII, codeToDecode, originalASCII;
-    long long int decodingOffSet;
+    int passPhrase, flag = 1, SPP, countPPDigit, tempASCII, originalASCII;
+    long long int codeToDecode;
     //Loop Control variables
     int i = 1, j;
     //Call function to calculate PassPhrase
