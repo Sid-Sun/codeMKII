@@ -26,14 +26,14 @@ int calculateSunPassPhrase(int passPhrase);
 
 //Functions
 int main(int argc, char *argv[]) {
-    if (argc == 5) {
+    if (argc >= 5) {
         if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode") || !strcmp(argv[1], "-encode")) {
             encode(argc, argv);
         } else if (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--decode") || !strcmp(argv[1], "-decode")) {
             decode(argc, argv);
         }
-    } else if (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version")) {
-        printf("codeMKII version: v1.1.0\n");
+    } else if (argc == 2 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version"))) {
+        printf("codeMKII version: v1.1.2\n");
     } else {
         printf("\nUsage:\n");
         printf("    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.\n");
