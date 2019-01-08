@@ -2,7 +2,7 @@
 
 Introducting codeMKII, my encoding solution.
 
-Current version: v1.1.0
+Current version: v1.1.3
 
 Usage:
 

@@ -8,13 +8,13 @@
 //Declaration of functions
 int code(char letter);
 
-int encode(int argc, char *argv[]);
+int encode(char *argv[]);
 
 int sunCodePassPhrase(int number, int count);
 
 int passPhraseCalculate(char *argv[]);
 
-int decode(int argc, char *argv[]);
+int decode(char *argv[]);
 
 unsigned concatenate(unsigned x, unsigned y);
 
@@ -28,12 +28,12 @@ int calculateSunPassPhrase(int passPhrase);
 int main(int argc, char *argv[]) {
     if (argc >= 5) {
         if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode") || !strcmp(argv[1], "-encode")) {
-            encode(argc, argv);
+            encode(argv);
         } else if (!strcmp(argv[1], "-d") || !strcmp(argv[1], "--decode") || !strcmp(argv[1], "-decode")) {
-            decode(argc, argv);
+            decode(argv);
         }
     } else if (argc == 2 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version"))) {
-        printf("codeMKII version: v1.1.2\n");
+        printf("codeMKII version: v1.1.3\n");
     } else {
         printf("\nUsage:\n");
         printf("    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.\n");
@@ -43,15 +43,13 @@ int main(int argc, char *argv[]) {
     }
 }
 
-int decode(int argc, char *argv[]) {
+int decode(char *argv[]) {
     FILE *inputCode = fopen(argv[2], "r");
     FILE *outputFile = fopen(argv[4], "a");
     int a = 7260703;
     char codeChar;
-    int passPhrase, flag = 1, SPP, countPPDigit, tempASCII, originalASCII;
+    int passPhrase, flag = 1, SPP, originalASCII;
     long long int codeToDecode;
-    //Loop Control variables
-    int i = 1, j;
     //Call function to calculate PassPhrase
     passPhrase = passPhraseCalculate(argv);
     //Call function to calculate sunPassPhrase
@@ -76,13 +74,12 @@ int decode(int argc, char *argv[]) {
     return 0;
 }
 
-int encode(int argc, char *argv[]) {
+int encode(char *argv[]) {
     FILE *messageFile = fopen(argv[2], "r");
     char messageChar;
-    char minus = *"-";
     int a = 7260703;
     long long int messageIndivisualEncoded;
-    int passPhrase, SPP, tempASCII, countPPDigit = 0;
+    int passPhrase, SPP, tempASCII;
     int messageASCII;
     //Loop control variables
     int n = 0, i = 0;
@@ -118,8 +115,7 @@ int encode(int argc, char *argv[]) {
 
 int writeOutput(long long int encodedMessage, int encodedMessageLength, char *argv[]) {
     FILE *outputFile = fopen(argv[4], "a");
-    int encodedMessageDigitArray[encodedMessageLength];
-    int messageDigit, n = 1, i;
+    int encodedMessageDigitArray[encodedMessageLength], messageDigit, n = 1, i;
     while (encodedMessage != 0) {
         messageDigit = encodedMessage % 10;
         encodedMessageDigitArray[encodedMessageLength - n] = messageDigit;
@@ -131,11 +127,11 @@ int writeOutput(long long int encodedMessage, int encodedMessageLength, char *ar
     }
     fprintf(outputFile, "%c", '-');
     fclose(outputFile);
+    return 0;
 }
 
 int sunCodePassPhrase(int number, int count) {
     int digit, code, spp = 1, flag = 1, digitArray[count], n = 1;
-    unsigned int pow = 10;\
     while (number != 0) {
         digit = number % 10;
         digitArray[count - n] = digit; //n must be initialized with 1 as arrays start at 0
