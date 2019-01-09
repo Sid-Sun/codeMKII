@@ -2,7 +2,7 @@
 
 Introducting codeMKII, my encoding solution.
 
-Current version: v1.1.3
+Current version: v1.3.2
 
 Usage:
 
@@ -27,4 +27,4 @@ Linux:
 
 OR:
 
-	curl https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/install-linux.sh | sh
+	curl https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/install-linux.sh | bash
