@@ -1,8 +1,8 @@
 # codeMKII
 
-Introducting codeMKII, my encoding solution.
+Introducing codeMKII, my encoding solution.
 
-Current version: v1.3.2
+Current version: v1.4.2
 
 Usage:
 
@@ -13,6 +13,10 @@ Usage:
 To check verison:
 
     codeMK2 (--version / -version /-v)
+
+To upgrade:
+
+    codeMK2 (--upgrade / -upgrade /-u)
 
 Installation:
 

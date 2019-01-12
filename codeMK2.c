@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <stdlib.h> // For exit()
 #include <string.h>
-
 //Declaration of functions
 int code(char letter);
 
@@ -24,8 +23,11 @@ int writeOutput(long long int encodedMessage, int encodedMessageLength, char *ar
 
 int calculateSunPassPhrase(int passPhrase);
 
+int upgrade(char *argv[],char versionNumber[]);
+
 //Functions
 int main(int argc, char *argv[]) {
+    char version[]="v1.4.2";
     if (argc >= 5) {
         if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode") || !strcmp(argv[1], "-encode")) {
             encode(argv);
@@ -33,14 +35,26 @@ int main(int argc, char *argv[]) {
             decode(argv);
         }
     } else if (argc == 2 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version"))) {
-        printf("codeMKII version: v1.1.3\n");
+        printf("codeMKII version: %s\n",version);
+    } else if (argc == 2 && (!strcmp(argv[1], "-u") || !strcmp(argv[1], "--upgrade") || !strcmp(argv[1], "-upgrade"))) {
+        upgrade(argv,version);
     } else {
         printf("\nUsage:\n");
         printf("    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.\n");
         printf("    For decoding: codeMK2 (--decode / -decode / -d) <input: codeMK2 encoded file> <passphrase file> <original message output file name>.\n");
         printf("\nTo check version:\n");
         printf("    codeMK2 (--version / -version /-v).\n");
+        printf("\nTo upgrade:\n");
+        printf("    codeMK2 (--upgrade / -upgrade /-u).\n");
     }
+    return 0;
+}
+
+int upgrade(char *argv[],char versionNumber[]){
+    char command[300];
+    sprintf(command, "export currentlyInstalledVersion=%s; export calledCommand=%s; $(curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/upgrade.script > /tmp/upgradeScript); bash /tmp/upgradeScript; rm -rf /tmp/upgradeScript",versionNumber,argv[0]);
+    system(command);
+    return 0;
 }
 
 int decode(char *argv[]) {
