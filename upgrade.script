@@ -1,6 +1,6 @@
 buildBinary(){
-    git clone https://github.com/Sid-Sun/codeMKII.git /tmp/codeMKII
-    cd /tmp/codeMKII
+    curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/codeMK2.c > /tmp/codeMK2.c
+    cd /tmp/
     read -r -p "Which compiler do you want to use? [gcc/clang] " response
     if [[ "$response" =~ ^([gG][cC][cC]|[gG])+$ ]]
     then
@@ -13,7 +13,7 @@ replaceBinary(){
     export savedGroup=$(ls -l $pathToBinary | awk '{print $4}') #save group so we can chown later on and apply the previous group, do it before check as we need to store it on either cases
     if [[ $(ls -l $pathToBinary | awk '{print $3}') == $USER ]] #Check if current user owns the binary 
     then
-        mv /tmp/codeMKII/codeMK2 $pathToBinary
+        mv /tmp/codeMK2 $pathToBinary
         chmod 755 $pathToBinary
         if [[ $USER != $savedGroup ]]
         then
@@ -21,18 +21,18 @@ replaceBinary(){
         fi
         echo "Upgrade completed."
     else
-        read -r -p "The binary file is not owned by "$USER", do you wish to try with superuser privilages? (y/n): " response
+        read -r -p "The binary file is not owned by "$USER", do you wish to try with superuser privileges? (y/n): " response
         if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
         then
-            sudo mv /tmp/codeMKII/codeMK2 $pathToBinary
+            sudo mv /tmp/codeMK2 $pathToBinary
             sudo chmod 755 $pathToBinary
-            sudo chown :savedGroup $pathToBinary
-            echo "Upgrade completed successfully if the superuser privilages were granted."
+            sudo chown :$savedGroup $pathToBinary
+            echo "Upgrade completed successfully if the superuser privileges were granted."
         else
             echo "Upgrade aborted."
         fi
     fi
-    rm -rf /tmp/codeMKII #Remove the cloned source regarnless if the upgrade was successful.
+    rm -f /tmp/codeMK2.c #Remove the curl'd source regardless of the upgrade succeeding.
 }
 export upstreamVersion=$(curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/version.number | cat)
 if [[ $currentlyInstalledVersion != $upstreamVersion ]]

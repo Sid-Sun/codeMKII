@@ -1,5 +1,4 @@
-git clone https://github.com/Sid-Sun/codeMKII.git
-cd codeMKII
+curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/codeMK2.c > codeMK2.c
 read -r -p "Which compiler do you want to use? [gcc/clang] " response
 if [[ "$response" =~ ^([gG][cC][cC]|[gG])+$ ]]
 then
@@ -27,7 +26,6 @@ fi
 read -r -p "Do you want to delete the source code now? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
 then
-	cd ..
-	rm -rf codeMKII
+	rm -f codeMK2.c
 fi
 echo "Enjoy!"
