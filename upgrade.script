@@ -11,10 +11,11 @@ buildBinary(){
 }
 replaceBinary(){
     export savedGroup=$(ls -l $pathToBinary | awk '{print $4}') #save group so we can chown later on and apply the previous group, do it before check as we need to store it on either cases
+    export savedPermissions=$(stat -c "%a %n" $pathToBinary | awk '{print $1}'); #Save file permissions too; in case user uses something other than 755.
     if [[ $(ls -l $pathToBinary | awk '{print $3}') == $USER ]] #Check if current user owns the binary 
     then
         mv /tmp/codeMK2 $pathToBinary
-        chmod 755 $pathToBinary
+        chmod $savedPermissions $pathToBinary
         if [[ $USER != $savedGroup ]]
         then
             chown :$savedGroup $pathToBinary
@@ -25,7 +26,7 @@ replaceBinary(){
         if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
         then
             sudo mv /tmp/codeMK2 $pathToBinary
-            sudo chmod 755 $pathToBinary
+            sudo chmod $savedPermissions $pathToBinary
             sudo chown :$savedGroup $pathToBinary
             echo "Upgrade completed successfully if the superuser privileges were granted."
         else
@@ -43,8 +44,7 @@ then
         export checkAliased=$(type $calledCommand | awk '{print $3}')
         if [[ $checkAliased == "aliased" ]]
         then
-            export possiblePathToBinary=$(type $calledCommand | awk '{print $5}') #We cannot be definite that this IS the binary file path
-            export pathToBinary=$(readlink -f $possiblePathToBinary) #Entertain the possibility that the alias could point to a symlink
+            export pathToBinary=$(readlink -f $(type $calledCommand | awk '{print $5}')) #Entertain the possibility that the alias could point to a symlink
             buildBinary
             replaceBinary
         else
