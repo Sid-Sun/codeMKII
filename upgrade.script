@@ -35,6 +35,14 @@ replaceBinary(){
     fi
     rm -f /tmp/codeMK2.c #Remove the curl'd source regardless of the upgrade succeeding.
 }
+readlinkRecursively(){
+    toCheck=$1
+	export checkedWithReadlink=$(readlink $toCheck | awk '{print $1}');
+    if [[ $checkedWithReadlink != '' ]]
+    then
+        readlinkRecursively "$checkedWithReadlink"
+     fi
+}
 export upstreamVersion=$(curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/version.number | cat)
 if [[ $currentlyInstalledVersion != $upstreamVersion ]]
 then
@@ -44,11 +52,13 @@ then
         export checkAliased=$(type $calledCommand | awk '{print $3}')
         if [[ $checkAliased == "aliased" ]]
         then
-            export pathToBinary=$(readlink -f $(type $calledCommand | awk '{print $5}')) #Entertain the possibility that the alias could point to a symlink
+            readlinkRecursively $(type $calledCommand | awk '{print $5}')
+            export pathToBinary=$toCheck
             buildBinary
             replaceBinary
         else
-            export pathToBinary=$(readlink -f $checkAliased) #Consider that the now confirmed to be non-alias file could be a symlink and thus be sure to get the binary file path
+            readlinkRecursively $checkAliased
+            export pathToBinary=$toCheck
             buildBinary
             replaceBinary
         fi
