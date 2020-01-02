@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h> // For exit()
 #include <string.h>
+
 //Declaration of functions
 int code(char letter);
 
@@ -23,11 +24,11 @@ int writeOutput(long long int encodedMessage, int encodedMessageLength, char *ar
 
 int calculateSunPassPhrase(int passPhrase);
 
-int upgrade(char *argv[],char versionNumber[]);
+int upgrade(char *argv[], char versionNumber[]);
 
 //Functions
 int main(int argc, char *argv[]) {
-    char version[]="v1.4.2";
+    char version[] = "v1.5.0";
     if (argc >= 5) {
         if (!strcmp(argv[1], "-e") || !strcmp(argv[1], "--encode") || !strcmp(argv[1], "-encode")) {
             encode(argv);
@@ -35,9 +36,9 @@ int main(int argc, char *argv[]) {
             decode(argv);
         }
     } else if (argc == 2 && (!strcmp(argv[1], "-v") || !strcmp(argv[1], "--version") || !strcmp(argv[1], "-version"))) {
-        printf("codeMKII version: %s\n",version);
+        printf("codeMKII version: %s\n", version);
     } else if (argc == 2 && (!strcmp(argv[1], "-u") || !strcmp(argv[1], "--upgrade") || !strcmp(argv[1], "-upgrade"))) {
-        upgrade(argv,version);
+        upgrade(argv, version);
     } else {
         printf("\nUsage:\n");
         printf("    For encoding: codeMK2 (--encode / -encode / -e) <input message file> <passphrase file> <output file>.\n");
@@ -50,9 +51,11 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-int upgrade(char *argv[],char versionNumber[]){
+int upgrade(char *argv[], char versionNumber[]) {
     char command[300];
-    sprintf(command, "export currentlyInstalledVersion=%s; export calledCommand=%s; $(curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/upgrade.script > /tmp/upgradeScript); bash /tmp/upgradeScript; rm -rf /tmp/upgradeScript",versionNumber,argv[0]);
+    sprintf(command,
+            "export currentlyInstalledVersion=%s; export calledCommand=%s; $(curl -s https://raw.githubusercontent.com/Sid-Sun/codeMKII/master/upgrade.script > /tmp/upgradeScript); bash /tmp/upgradeScript; rm -rf /tmp/upgradeScript",
+            versionNumber, argv[0]);
     system(command);
     return 0;
 }
@@ -222,24 +225,19 @@ int passPhraseCalculate(char *argv[]) {
     }
     passPhraseChar = fgetc(passPhraseFile);
     while (passPhraseChar != EOF) {
-        if ((int) passPhraseChar != 10) {
-            passPhraseASCII = (int) passPhraseChar;
-            tempASCII = passPhraseASCII;
-            while (tempASCII != 0) {
-                tempASCII = tempASCII / 10;
-                countPPDigit++;
-            }
-            if (flag == 1) {
-                passPhraseDiff = passPhraseASCII;
-                flag = 0;
-            } else {
-                passPhraseDiff = passPhraseDiff - passPhraseASCII;
-            }
-            passPhraseChar = fgetc(passPhraseFile);
-
-        } else {
-            break;
+        passPhraseASCII = (int) passPhraseChar;
+        tempASCII = passPhraseASCII;
+        while (tempASCII != 0) {
+            tempASCII = tempASCII / 10;
+            countPPDigit++;
         }
+        if (flag == 1) {
+            passPhraseDiff = passPhraseASCII;
+            flag = 0;
+        } else {
+            passPhraseDiff = passPhraseDiff - passPhraseASCII;
+        }
+        passPhraseChar = fgetc(passPhraseFile);
     }
     passPhraseDiff = abs(passPhraseDiff);
     passPhrase = (passPhraseDiff / countPPDigit);
