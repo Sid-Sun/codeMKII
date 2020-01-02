@@ -9,7 +9,7 @@ fi
 read -r -p "Would you like to install codeMKII system-wide (requires superuser privilages)? [y/N] " response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
 then
-    sudo mkdir -P /usr/share/codeMKII
+    sudo mkdir -p /usr/share/codeMKII
     sudo mv codeMK2 /usr/share/codeMKII/.
     sudo chmod 755 /usr/share/codeMKII/codeMK2
     sudo chown root:root /usr/share/codeMKII/codeMK2
